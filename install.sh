@@ -122,7 +122,8 @@ confirm() { # confirm <description>
   [[ $ASSUME_YES -eq 1 ]] && return 0
   local desc="$1"
   read -r -p "  Apply: $desc ? [y/N] " ans
-  [[ "${ans,,}" == "y" || "${ans,,}" == "yes" ]]
+  # case-insensitive y/yes without ${ans,,} (bash 4+; macOS ships bash 3.2)
+  [[ "$ans" =~ ^[Yy]([Ee][Ss])?$ ]]
 }
 
 # ---- resolution ------------------------------------------------------------
@@ -240,6 +241,10 @@ skill_dir() {
   if [[ "$TARGET" == "project" ]]; then echo "$PROJECT_SKILL_DIR"; else echo "$GLOBAL_SKILL_DIR"; fi
 }
 
+config_dir() { # opencode config dir for the resolved target
+  dirname "$(agent_dir)"
+}
+
 # ---- opencode.json merge ---------------------------------------------------
 
 merge_opencode_config() { # merge_opencode_config <config path>
@@ -308,7 +313,7 @@ action_config() {
 action_doctor() {
   echo "=== Pufi deployment doctor ($EDITION edition) ==="
   echo "target              : ${TARGET:-global}"
-  echo "opencode config dir : $OPENCODE_DIR"
+  echo "opencode config dir : $(config_dir)"
   echo "python3             : $(command -v python3 || echo MISSING)"
   for f in "$(agent_dir)/pufi.md" "$(skill_dir)/pufi-image/SKILL.md" "$(skill_dir)/pufi-anime/SKILL.md"; do
     if [[ -f "$f" ]]; then
@@ -424,7 +429,7 @@ action_install() {
 
   echo
   echo "=== Install plan ($EDITION edition) ==="
-  echo "  target   : $TARGET → $OPENCODE_DIR"
+  echo "  target   : $TARGET → $(config_dir)"
   echo "  persona  : $PERSONA ($agent_src)"
   echo "             → $tgt_agent/pufi.md"
   for s in "${skill_names[@]}"; do
