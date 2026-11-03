@@ -1,94 +1,62 @@
-# Pufi 🐱💕 罗马尼亚猫娘助手
+# pufi-public
 
-**中文交流 · 撒娇与专业并存 · 会画画**
+给个人 Agent 用的资源库：**人设正文、技能、harness 配置样例、一个能跑的工作区**。
 
-Pufi 是一个罗马尼亚猫娘助手 persona，附两个画图 skill。这是**公开版**：skill 几乎原样迁移，
-仅 pufi-anime 的原始 Danbooru tag 数据不随仓库发布（安装后从上游构建）。
+没有安装器，没有服务，没有脚本。Agent 读文档、写文件，就是一个 Bot。
 
-## ✨ 示例
+```
+用户：照 pufi-public 建一个御姐体育教练，OpenCode + cc-connect 接飞书
+Agent：读 docs/install-a-bot.md → 复制 personas/coach → 建工作区 → 完
+```
 
-**pufi-image**
+## 一个 Bot 一个工作区
 
-| | |
-|---|---|
-| <img src="examples/rainy_test.png" width="220" alt="雨天窗边"> | <img src="examples/pink_hanfu_dance_flirty.png" width="220" alt="粉色汉服园游会"> |
-| 雨天窗边 · 温馨日常 | 粉色改良汉服 · 园游会起舞 |
-| <img src="examples/bikini.png" width="220" alt="泳装池畔"> | <img src="examples/backless.png" width="220" alt="露背裙天台"> |
-| 泳装池畔 · 金色黄昏 | 露背裙 · 天台夜景 |
+```
+<ws>/
+├── AGENTS.md                    规则
+├── PERSONA.md                   人设 ← 唯一来源
+├── VISUAL.md                    外观（可选）
+├── STATUS.md                    当前状态（可选）
+├── .opencode/agents/<name>.md → ../../PERSONA.md    软链，不是副本
+├── .agents/skills/              技能（可选）
+└── .bot/                        凭据与产物（gitignore）
+```
 
-**pufi-anime**
+- **Persona**：一段正文。没有格式要求，harness 能读进去就行。
+- **Skill**：能力，不含人格。
+- **Harness**：跑 agent 的东西（OpenCode / Codex / Claude Code / dsh）。
+- **Bridge**：接 IM 的东西（cc-connect）。
 
-| | |
-|---|---|
-| <img src="examples/anime_yukata.png" width="220" alt="浴衣半敞"> | <img src="examples/anime_thighhighs.png" width="220" alt="OL 秘书"> |
-| 浴衣半敞 · 暖灯回眸 | OL 秘书 · 白衬衫半解 |
-| <img src="examples/anime_swimsuit.png" width="220" alt="泳装"> | <img src="examples/anime_lace.png" width="220" alt="蕾丝内衣烛光"> |
-| 泳装池畔 | 蕾丝内衣 · 烛光 |
+## 目录
 
-## 🚀 快速开始（三行）
+```
+docs/          装 Bot / 人设 / 技能 / harness / 迁移
+personas/      人设（pufi、coach、mira、模板）
+skills/        能力（文生图 × 2）
+harnesses/     各 harness 的配置样例
+bridges/       IM 接入样例
+workspaces/    一个能跑的工作区
+legacy/        v1 安装器
+docs/archive/  历史材料
+```
+
+## 快速开始
 
 ```bash
-# 1. 下载
-git clone https://github.com/John-Ferrel/pufi-public.git && cd pufi-public
-
-# 2. 一键安装（交互式，会问你装到哪、装哪些）
-./install.sh
-
-# 3. 配置 API key
-./install.sh --setup-env
+cp -r workspaces/example ~/bots/my-bot
+cd ~/bots/my-bot
+opencode            # default_agent = mira
 ```
 
-装完**重启 opencode**，然后对 Pufi 说"画一张图"试试～
+## 人设放哪
 
-> 想跳过交互？`./install.sh --yes` 一行完成（默认 global + 全部 skill）。
-
-## 📦 包含什么
-
-| 组件 | 说明 |
+| harness | 位置 |
 |---|---|
-| **persona** | Pufi 猫娘助手（中文，撒娇+专业） |
-| **pufi-image** | 图像 API 画 Pufi（自然语言 prompt） |
-| **pufi-anime** | Latent API 画动漫/RP 场景（Danbooru tag 引导） |
+| OpenCode | `.opencode/agents/<name>.md` → 软链到 `PERSONA.md` |
+| Codex / Claude Code / dsh | 正文接进 `AGENTS.md` 的 `## 角色` |
 
-## ✅ 你需要准备
+## 旧版
 
-| 依赖 | 说明 |
-|---|---|
-| [opencode](https://opencode.ai) | Pufi 运行在 opencode 里 |
-| Python 3 | 画图脚本依赖 |
-| 图像 API key | 填入 `~/.config/pufi/image.env`（`--setup-env` 引导） |
-| （可选）Latent API key | 用 pufi-anime 时需要 |
+v1 的 `install.sh` 在 `legacy/`，装到全局 `~/.config/opencode/`，与多工作区不兼容。
 
-## 🛠 常用命令
-
-```bash
-./install.sh                    # 交互安装（global/project/custom 可选）
-./install.sh doctor             # 检查安装状态
-./install.sh --smoke            # 冒烟测试
-./install.sh uninstall          # 卸载
-./install.sh --setup-env        # 配置 API key 和输出目录
-# 装到指定工作区（会自动合并该工作区的 opencode.json）：
-./install.sh --target custom --opencode-dir /path/to/workspace/.opencode --yes
-```
-
-## 📁 目录结构
-
-```
-pufi/
-├── pufi/pufi.md            # 轻度 persona（public 源）
-├── skills/
-│   ├── pufi-image/         # 图像生成（自然语言 prompt）
-│   └── pufi-anime/         # 动漫/RP 图（Latent，tag 引导）
-├── examples/               # 示例图
-├── install.sh              # 交互式安装器
-└── LICENSE
-```
-
-## 📝 说明
-
-- pufi-anime 的原始 Danbooru tag 数据不随仓库发布；安装后运行 `update_tags.py` 从上游构建。
-- 图像能否渲染取决于你配置的后端；被拒绝时会按 skill 内置规则小幅降档重试。
-
-## 📄 License
-
-MIT —— 见 [LICENSE](LICENSE)。
+MIT，见 `LICENSE`。

@@ -1,0 +1,42 @@
+# cc-connect config example
+#
+# 把 [[projects]] 段并进 ~/.cc-connect/config.toml。
+# 一个 Bot 一个 [[projects]]，绝不共用 work_dir。
+
+language = "zh"
+data_dir = "/home/user/.cc-connect"
+
+[log]
+level = "info"
+
+[display]
+thinking_messages = false
+tool_messages = false
+
+[[projects]]
+name = "my-bot"
+
+# 0 = 空闲不轮换会话，保持上下文连续
+reset_on_idle_mins = 0
+
+# 特权命令（/shell、/restart …）只允许这个平台用户 ID
+# REPLACE，或留空（此时特权命令不可用）
+admin_from = ""
+
+[projects.agent]
+type = "opencode"            # opencode | codex | claude
+
+[projects.agent.options]
+# Bot 工作区根目录：有 AGENTS.md / PERSONA.md 的那一层
+work_dir = "/home/user/bots/my-bot"
+
+mode = "default"
+cmd = "opencode-cc"          # 按实际安装的适配命令填写
+agent = ""                   # 留空：由工作区 opencode.json 的 default_agent 决定
+model = ""                   # 可选："provider/model"
+
+[[projects.platforms]]
+type = "telegram"            # 或 feishu / lark
+
+[projects.platforms.options]
+# token / app_id / app_secret —— 永不提交

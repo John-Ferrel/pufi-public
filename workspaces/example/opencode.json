@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "mira",
+  "instructions": ["AGENTS.md"],
+  "permission": {
+    "external_directory": {
+      ".bot/**": "allow",
+      ".agents/**": "allow"
+    }
+  }
+}

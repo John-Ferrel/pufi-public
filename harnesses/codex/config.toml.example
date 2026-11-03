@@ -1,0 +1,13 @@
+# ~/.codex/config.toml — 最小样例（可选）
+# Codex 不要求工作区里有配置文件；这只影响项目指令的发现方式。
+
+# 单次合并后的指令总大小上限（默认 32768）
+project_doc_max_bytes = 65536
+
+# 想复用别的文件名作为指令文件时加进来（按顺序查找）
+# project_doc_fallback_filenames = ["TEAM_GUIDE.md", ".agents.md"]
+
+# 关闭某个 skill（不删除文件）
+# [[skills.config]]
+# path = "/abs/path/.agents/skills/image-openai/SKILL.md"
+# enabled = false

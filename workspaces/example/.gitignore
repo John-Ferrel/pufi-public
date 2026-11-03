@@ -1,0 +1,4 @@
+.bot/*.env
+.bot/outputs/
+.agents/outputs/
+__pycache__/
